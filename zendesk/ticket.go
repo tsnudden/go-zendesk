@@ -175,6 +175,37 @@ func (z *Client) GetTickets(ctx context.Context, opts *TicketListOptions) ([]Tic
 	return data.Tickets, data.Page, nil
 }
 
+// GetTickets get all tickets requested by a user
+//
+// ref: https://developer.zendesk.com/rest_api/docs/support/tickets#list-tickets
+func (z *Client) GetUserTicketsRequested(ctx context.Context, userID int64, opts *TicketListOptions) ([]Ticket, Page, error) {
+	var data struct {
+		Tickets []Ticket `json:"tickets"`
+		Page
+	}
+
+	tmp := opts
+	if tmp == nil {
+		tmp = &TicketListOptions{}
+	}
+
+	u, err := addOptions(fmt.Sprintf("/users/%d/tickets/requested.json", userID), tmp)
+	if err != nil {
+		return nil, Page{}, err
+	}
+
+	body, err := z.get(ctx, u)
+	if err != nil {
+		return nil, Page{}, err
+	}
+
+	err = json.Unmarshal(body, &data)
+	if err != nil {
+		return nil, Page{}, err
+	}
+	return data.Tickets, data.Page, nil
+}
+
 // GetTicket gets a specified ticket
 //
 // ref: https://developer.zendesk.com/rest_api/docs/support/tickets#show-ticket
