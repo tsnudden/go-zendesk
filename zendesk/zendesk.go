@@ -18,7 +18,7 @@ const (
 )
 
 var defaultHeaders = map[string]string{
-	"User-Agent":   "nukosuke/go-zendesk",
+	"User-Agent":   "meetami",
 	"Content-Type": "application/json",
 }
 
